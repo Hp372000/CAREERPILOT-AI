@@ -33,7 +33,7 @@ A detailed architecture diagram will be added as the system evolves.
 
 ```text
 career-pilot-ai/
-  ├── README.md
+  ├── Readme.md
   ├── .gitignore
   ├── requirements.txt
   ├── src/
