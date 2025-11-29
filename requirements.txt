@@ -1,0 +1,11 @@
+# Core dependencies (will grow as project progresses)
+python-dotenv
+
+# Future:
+# playwright
+# streamlit
+# sentence-transformers
+# beautifulsoup4
+# python-telegram-bot
+# sqlalchemy
+# requests
