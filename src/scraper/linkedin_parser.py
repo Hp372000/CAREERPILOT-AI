@@ -9,12 +9,25 @@ async def extract_job_cards(page: Page):
     results = []
 
     for card in job_cards:
-        title = await card.locator("h3").text_content() or ""
-        company = await card.locator("h4").text_content() or ""
-        location = await card.locator(".job-card-container__metadata-item").text_content() or ""
-        link = await card.locator("a").get_attribute("href") or ""
+        # Try primary selectors
+        title = await card.locator("h3").text_content()
+        company = await card.locator("h4").text_content()
+        location = await card.locator(".job-card-container__metadata-item").text_content()
+        link = await card.locator("a").get_attribute("href")
 
-        # Normalize link (LinkedIn uses relative)
+        # Fallbacks
+        if not title:
+            title = await card.locator(".base-search-card__title").text_content()
+        if not company:
+            company = await card.locator(".base-search-card__subtitle").text_content()
+        if not location:
+            location = await card.locator(".job-search-card__location").text_content()
+
+        title = title or ""
+        company = company or ""
+        location = location or ""
+        link = link or ""
+
         if link.startswith("/"):
             link = "https://www.linkedin.com" + link
 
@@ -22,7 +35,7 @@ async def extract_job_cards(page: Page):
             "title": title.strip(),
             "company": company.strip(),
             "location": location.strip(),
-            "link": link.strip()
+            "link": link.strip(),
         })
-
+    
     return results
