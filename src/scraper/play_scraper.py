@@ -31,6 +31,11 @@ async def scrape_linkedin_jobs():
 
         await page.goto(SEARCH_URL, timeout=60000)
         await page.wait_for_timeout(4000)  # wait for dynamic content
+        
+        # Scroll to load dynamic job results
+        for _ in range(5):
+          await page.mouse.wheel(0, 5000)
+          await page.wait_for_timeout(1500)
 
         job_cards = await extract_job_cards(page)
 
