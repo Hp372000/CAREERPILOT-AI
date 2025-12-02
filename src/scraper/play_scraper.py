@@ -1,20 +1,31 @@
 import asyncio
 from playwright.async_api import async_playwright
+from .linkedin_parser import extract_job_cards
+from .logger import get_logger
+
+logger = get_logger("scraper")
+
+SEARCH_URL = (
+    "https://www.linkedin.com/jobs/search/?keywords=DevOps&location=Canada"
+)
 
 
-async def test_browser():
-    """Opens a browser and navigates to example.com for validation."""
+async def scrape_linkedin_jobs():
+    """Navigate to LinkedIn job search and extract job cards."""
+
+    logger.info(f"Navigating to LinkedIn search: {SEARCH_URL}")
+
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
 
-        print("[Scraper] Navigating to https://example.com ...")
-        await page.goto("https://example.com")
-        title = await page.title()
-        print(f"[Scraper] Page title: {title}")
+        await page.goto(SEARCH_URL, timeout=60000)
+        await page.wait_for_timeout(4000)  # wait for dynamic content
+
+        job_cards = await extract_job_cards(page)
+
+        logger.info(f"Found {len(job_cards)} job cards")
 
         await browser.close()
 
-
-if __name__ == "__main__":
-    asyncio.run(test_browser())
+        return job_cards
